@@ -26,11 +26,12 @@ export default function ChatPage(props){
         let date = new Date();
         let formatedDate = `${date.getFullYear}/${date.getFullYear}/${date.getDay} ${date.getHours}:${date.getMinutes}:${date.getSeconds}`;
 
-        axios.post(route('generateResp'), userPrompt, {
+        axios.post(route('generateResp'), {prompt: userPrompt}, {
             headers: {
                 'Accept': 'Application/json'
             }
         }).then(res => {
+            console.log(res);
             if(res.status == 200){
                 setMessages([...messages, {content: userPrompt, messageType: 'user', date: formatedDate}, res.data.messageObj]);
                 setUserPrompt('');
@@ -45,10 +46,10 @@ export default function ChatPage(props){
         <AuthenticatedLayout>
             <Head title='chat' />
             <div className='flex flex-col gap-2 mx-auto mt-5 p-4 rounded-md lg:w-[70%] md:w-[80%] sm:w-[95%] h-[100%] dark:text-white dark:bg-slate-800'>
-                <UserMessage content={'Hello how can i help you today?.'} />
+                <ChatBotResponse content={'Hello how can i help you today?.'} />
                 {messages.map((msg, idx) => {
-                    return msg.messageType === 'user' ? <UserMessage content={msg.content} date={msg.date} key={idx} />
-                    : msg.messageType === 'assistant' ? <ChatBotResponse content={msg.content} date={msg.date} key={idx} /> : null
+                    return msg.messageType === 'user' ? <UserMessage content={JSON.stringify(msg.content)} date={msg.date} key={idx} />
+                    : msg.messageType === 'assistant' ? <ChatBotResponse content={JSON.stringify(msg.content)} date={msg.date} key={idx} /> : null
                 })}
             </div>
             <div className='flex flex-col gap-2 w-[95%] max-w-[500px] mx-auto mt-5'>
